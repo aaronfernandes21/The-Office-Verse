@@ -1,5 +1,7 @@
+from flask import Flask, request, jsonify, send_from_directory
 from fuzzywuzzy import fuzz
-from fuzzywuzzy import process
+
+app = Flask(__name__, static_folder="../frontend", static_url_path="")
 
 # Sample dataset: Episode names and descriptions
 episodes = [
@@ -17,39 +19,22 @@ episodes = [
     {"name": "Goodbye, Michael", "description": "Michael's farewell party as he leaves Dunder Mifflin."},
 ]
 
-def find_matching_episodes(keyword, episodes):
-    """
-    Finds episodes that match the given keyword.
-    
-    Args:
-        keyword (str): Keyword to search for.
-        episodes (list): List of episodes with names and descriptions.
-        
-    Returns:
-        list: Matching episodes.
-    """
-    matches = []
-    for episode in episodes:
-        score_name = fuzz.partial_ratio(keyword.lower(), episode["name"].lower())
-        score_desc = fuzz.partial_ratio(keyword.lower(), episode["description"].lower())
-        if score_name > 70 or score_desc > 70:  # Match threshold
-            matches.append(episode)
-    return matches
+@app.route("/")
+def serve_frontend():
+    return send_from_directory("../frontend", "index.html")
 
-def main():
-    print("Welcome to 'The Office' Episode Finder!")
-    keyword = input("Enter a keyword or genre to search for episodes: ").strip()
-    
-    # Find matches
-    matches = find_matching_episodes(keyword, episodes)
-    
-    # Output results
-    if matches:
-        print("\nMatching Episodes:")
-        for match in matches:
-            print(f"- {match['name']}: {match['description']}")
-    else:
-        print("\nNo matching episodes found.")
+@app.route("/search")
+def search_episodes():
+    keyword = request.args.get("keyword", "").lower()
+    if not keyword:
+        return jsonify([])
+
+    matches = [
+        episode for episode in episodes
+        if fuzz.partial_ratio(keyword, episode["name"].lower()) > 70
+        or fuzz.partial_ratio(keyword, episode["description"].lower()) > 70
+    ]
+    return jsonify(matches)
 
 if __name__ == "__main__":
-    main()
+    app.run(debug=True)
