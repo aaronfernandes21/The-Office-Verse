@@ -1,7 +1,9 @@
 from flask import Flask, request, jsonify, send_from_directory
+from flask_cors import CORS  # Import CORS
 from fuzzywuzzy import fuzz
 
 app = Flask(__name__, static_folder="../frontend", static_url_path="")
+CORS(app)  # Enable CORS for all routes
 
 # Sample dataset: Episode names and descriptions
 episodes = [
@@ -19,21 +21,18 @@ episodes = [
     {"name": "Goodbye, Michael", "description": "Michael's farewell party as he leaves Dunder Mifflin."},
 ]
 
-@app.route("/")
-def serve_frontend():
-    return send_from_directory("../frontend", "index.html")
-
 @app.route("/search")
 def search_episodes():
     keyword = request.args.get("keyword", "").lower()
-    if not keyword:
-        return jsonify([])
+    print(f"🔍 Searching for: {keyword}")  # Debugging output
 
     matches = [
         episode for episode in episodes
         if fuzz.partial_ratio(keyword, episode["name"].lower()) > 70
         or fuzz.partial_ratio(keyword, episode["description"].lower()) > 70
     ]
+
+    print(f"✅ Matches found: {matches}")  # Debugging output
     return jsonify(matches)
 
 if __name__ == "__main__":
