@@ -1,25 +1,41 @@
 <template>
-  <div class="container">
-    <h1>The Office Episode Finder</h1>
+  <div>
+    <!-- Navbar -->
+    <nav class="navbar">
+      <div class="logo">The Office Verse</div>
+      <ul class="nav-links">
+        <li><a href="#">Home</a></li>
+        <li><a href="#">Episodes</a></li>
+        <li><a href="#">About</a></li>
+        <li><a href="#">Contact</a></li>
+      </ul>
+    </nav>
 
-    <div class="search-container">
-      <input 
-        v-model="keyword" 
-        @input="searchEpisodes" 
-        placeholder="Search for an episode..." 
-        class="search-bar"
-      />
-    </div>
+    <div class="container">
+      <h1>The Office Episode Finder</h1>
 
-    <div v-if="episodes.length" class="results">
-      <div v-for="episode in episodes" :key="episode.name" class="episode-card">
-        <h3>{{ episode.name }}</h3>
-        <p>{{ episode.description }}</p>
+      <div class="search-container">
+        <input 
+          v-model="keyword" 
+          @input="searchEpisodes" 
+          placeholder="Search for an episode..." 
+          class="search-bar"
+        />
+        <div class="image-placeholder"></div>
       </div>
-    </div>
 
-    <div v-else-if="keyword" class="no-results">
-      <p>No episodes found. Try another search!</p>
+      <div class="results-container">
+        <div v-if="episodes.length" class="results">
+          <div v-for="episode in episodes" :key="episode.name" class="episode-card">
+            <h3>{{ episode.name }}</h3>
+            <p>{{ episode.description }}</p>
+          </div>
+        </div>
+
+        <div v-else-if="keyword" class="no-results">
+          <p>No episodes found. Try another search!</p>
+        </div>
+      </div>
     </div>
   </div>
 </template>
@@ -52,46 +68,45 @@ export default {
 </script>
 
 <style>
-/* Background inspired by The Office */
-body {
-  background-color: #1c1c1c;
-  color: #f4f4f4;
-  font-family: "Helvetica", Arial, sans-serif;
+/* Navbar Styling */
+.navbar {
   display: flex;
-  justify-content: center;
+  justify-content: space-between;
   align-items: center;
-  height: 100vh;
-  margin: 0;
-}
-
-/* Container */
-.container {
-  width: 600px;
-  text-align: center;
   background: #292929;
-  padding: 20px;
-  border-radius: 8px;
-  box-shadow: 0 2px 5px rgba(0, 0, 0, 0.3);
+  padding: 10px 20px;
+  border-bottom: 2px solid #444;
 }
 
-/* Title */
-h1 {
+.logo {
+  font-family: "Arial", sans-serif;
   font-size: 24px;
   font-weight: bold;
-  margin-bottom: 20px;
-  color: #ffffff;
+  color: white;
+}
+
+.nav-links {
+  list-style: none;
+  display: flex;
+  gap: 20px;
+}
+
+.nav-links li a {
+  text-decoration: none;
+  color: white;
+  font-size: 16px;
 }
 
 /* Search Container */
 .search-container {
   display: flex;
+  align-items: center;
   justify-content: center;
-  margin-bottom: 20px;
+  margin-bottom: 10px;
 }
 
-/* Dark Minimalist Search Bar */
 .search-bar {
-  width: 80%;
+  width: 70%;
   max-width: 400px;
   padding: 12px;
   font-size: 16px;
@@ -104,43 +119,11 @@ h1 {
   text-align: center;
 }
 
-.search-bar::placeholder {
-  color: #bbb;
-}
-
-.search-bar:focus {
-  border-bottom: 2px solid #0073e6;
-}
-
-/* Episode Results */
-.results {
-  margin-top: 20px;
-}
-
-.episode-card {
-  background: #222;
-  padding: 10px;
-  margin: 10px 0;
+.image-placeholder {
+  width: 50px;
+  height: 50px;
+  background: gray;
+  margin-left: 10px;
   border-radius: 5px;
-  box-shadow: none;
-  text-align: left;
-}
-
-.episode-card h3 {
-  color: #f4f4f4;
-  margin: 0;
-  font-size: 18px;
-}
-
-.episode-card p {
-  font-size: 14px;
-  color: #aaa;
-}
-
-/* No Results Message */
-.no-results {
-  margin-top: 20px;
-  color: red;
-  font-weight: bold;
 }
 </style>
