@@ -10,6 +10,12 @@
         <li><a href="#">Contact</a></li>
       </ul>
     </nav>
+    
+    <!-- Trivia Section -->
+    <div class="trivia-section">
+      <button @click="fetchTrivia" class="trivia-button">Get Trivia</button>
+      <p v-if="trivia" class="trivia-text">{{ trivia }}</p>
+    </div>
 
     <div class="container">
       <h1>The Office Episode Finder</h1>
@@ -47,7 +53,8 @@ export default {
   data() {
     return {
       keyword: "",
-      episodes: []
+      episodes: [],
+      trivia: ""
     };
   },
   methods: {
@@ -61,6 +68,14 @@ export default {
         this.episodes = response.data;
       } catch (error) {
         console.error("❌ Error fetching episodes:", error);
+      }
+    },
+    async fetchTrivia() {
+      try {
+        const response = await axios.get("http://127.0.0.1:5000/trivia");
+        this.trivia = response.data.trivia;
+      } catch (error) {
+        console.error("❌ Error fetching trivia:", error);
       }
     }
   }
@@ -95,6 +110,38 @@ export default {
   text-decoration: none;
   color: white;
   font-size: 16px;
+}
+
+/* Trivia Section */
+.trivia-section {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 10px;
+  padding: 10px;
+  background: #333;
+  margin-top: 10px;
+}
+
+.trivia-button {
+  padding: 10px 20px;
+  font-size: 16px;
+  background:rgb(0, 0, 0);
+  border: none;
+  cursor: pointer;
+  transition: 0.3s;
+}
+
+.trivia-button:hover {
+  background: #e6b800;
+}
+
+.trivia-text {
+  font-size: 14px;
+  color: #fff;
+  font-weight: bold;
+  max-width: 60%;
+  text-align: center;
 }
 
 /* Search Container */
